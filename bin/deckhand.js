@@ -51,7 +51,7 @@ switch (cmd) {
   deckhand build [src=slides] [out=dist]   assemble, export PDF + PNG
   deckhand audit [out=dist]                vérifie les débordements
   deckhand init  [dir=slides]              crée une slide de départ
-  deckhand install [--target claude|codex|cursor|all]   installe le skill
+  deckhand install [--target claude|codex|agents|all]   installe le skill
 
 Un fragment par slide : slides/01.html, slides/02.html, …
 Layouts : cover, section, two-col, quote, data, full, list, end.

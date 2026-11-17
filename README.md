@@ -59,7 +59,7 @@ Then ask your agent for a deck. `SKILL.md` tells it which layout to use for whic
 content shape, the content rules (one idea per slide, six lines maximum, one
 accent), and the anti-patterns it must refuse.
 
-Supported: Claude Code, Codex, Cursor, and anything that reads a `SKILL.md`.
+Supported: Claude Code and Codex. Anything that reads a `SKILL.md` will work the same way.
 
 ## The 8 layouts
 
