@@ -246,6 +246,9 @@ em { font-style: italic; color: var(--accent); }
 /* ---------- 5. donnée ---------- */
 .slide--data { justify-content: flex-start; }
 .slide--data .figure {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
   font-family: var(--serif);
   font-size: 296px;
   line-height: .8;
@@ -255,6 +258,7 @@ em { font-style: italic; color: var(--accent); }
 }
 .slide--data .figure .unit {
   font-size: .30em;
+  transform: translateY(-0.06em);
   color: var(--accent);
   letter-spacing: -.01em;
 }
