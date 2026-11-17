@@ -1,5 +1,14 @@
 {
-  "name": "@iruzen/deckhand",
+  "name": "@iruzen-dono/deckhand",
+  "author": "Jules Zhou (https://github.com/iruzen-dono)",
+  "homepage": "https://iruzen-dono.github.io/deckhand/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iruzen-dono/deckhand.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iruzen-dono/deckhand/issues"
+  },
   "version": "0.1.0",
   "description": "Editorial slide system for coding agents. 8 layouts, one CSS file, zero dependencies, zero network.",
   "type": "module",
