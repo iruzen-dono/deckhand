@@ -1,0 +1,350 @@
+/* ============================================================
+   Deckhand — direction artistique
+   Une seule feuille. Pas de dépendance, pas de webfont.
+   Trois thèmes : paper (défaut), ink, night.
+   ============================================================ */
+
+:root {
+  --serif: "Instrument Serif", "Iowan Old Style", Palatino, Georgia, serif;
+  --sans: "Instrument Sans", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+
+  /* ---- thème paper ---- */
+  --paper: #f7f4ee;
+  --ink: #14110d;
+  --muted: #6b6459;
+  --rule: #d9d2c5;
+  --accent: #b4451f;
+  --accent-ink: #fffaf4;
+  --mark: #e8e0d2;
+
+  --pad: 96px;
+  --head: 64px;
+  --gap: 32px;
+}
+
+.theme-ink {
+  --paper: #12110f;
+  --ink: #f3efe7;
+  --muted: #908a7e;
+  --rule: #2b2823;
+  --accent: #e2683a;
+  --accent-ink: #17140f;
+  --mark: #232019;
+}
+
+.theme-night {
+  --paper: #0d1620;
+  --ink: #eef3f7;
+  --muted: #82959f;
+  --rule: #1f2d39;
+  --accent: #f0b429;
+  --accent-ink: #0d1620;
+  --mark: #16232e;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- la slide ---------- */
+.slide {
+  position: relative;
+  width: 1600px;
+  height: 900px;
+  padding: calc(var(--pad) + var(--head)) var(--pad) var(--pad);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  break-after: page;
+}
+
+/* foliot */
+.slide::after {
+  content: attr(data-n);
+  position: absolute;
+  right: var(--pad);
+  bottom: 44px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+
+/* kicker : hors flux, toujours en haut */
+.kicker {
+  position: absolute;
+  top: var(--pad);
+  left: var(--pad);
+  right: var(--pad);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.kicker::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--rule);
+}
+
+/* ---------- typographie ---------- */
+.display {
+  font-family: var(--serif);
+  font-size: 152px;
+  line-height: .92;
+  letter-spacing: -.028em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+h1, .h1 {
+  font-family: var(--serif);
+  font-size: 98px;
+  line-height: 1.02;
+  letter-spacing: -.022em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+h2, .h2 {
+  font-family: var(--serif);
+  font-size: 64px;
+  line-height: 1.06;
+  letter-spacing: -.018em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+h3, .h3 {
+  font-family: var(--sans);
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+  font-weight: 600;
+}
+.lede {
+  font-size: 31px;
+  line-height: 1.42;
+  color: var(--muted);
+  max-width: 20em;
+  text-wrap: pretty;
+}
+.body {
+  font-size: 24px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.small {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+.mono {
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: .04em;
+}
+
+.rule { height: 1px; background: var(--rule); width: 100%; }
+.accent { color: var(--accent); }
+mark { background: var(--mark); color: inherit; padding: 0 .12em; }
+em { font-style: italic; color: var(--accent); }
+
+/* ---------- 1. couverture ---------- */
+.slide--cover { justify-content: space-between; }
+.slide--cover .display { max-width: 12.6em; }
+.slide--cover .meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--gap);
+  padding-top: 30px;
+  border-top: 1px solid var(--rule);
+  font-size: 17px;
+  color: var(--muted);
+}
+.slide--cover .meta strong {
+  display: block;
+  color: var(--ink);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* ---------- 2. section ---------- */
+.slide--section { justify-content: center; gap: 22px; }
+.slide--section .num {
+  font-family: var(--serif);
+  font-size: 208px;
+  line-height: .78;
+  color: var(--accent);
+  letter-spacing: -.05em;
+}
+.slide--section .h1 { max-width: 13em; }
+
+/* ---------- 3. deux colonnes ---------- */
+.slide--two-col { justify-content: center; }
+.slide--two-col .h2 { max-width: 15em; }
+.slide--two-col .cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 88px;
+  margin-top: 56px;
+}
+.slide--two-col .col h3 {
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--accent);
+}
+.slide--two-col .col p + p { margin-top: 18px; }
+
+/* ---------- 4. citation ---------- */
+.slide--quote { justify-content: center; }
+.slide--quote blockquote {
+  font-family: var(--serif);
+  font-size: 116px;
+  line-height: 1.04;
+  letter-spacing: -.024em;
+  max-width: 14em;
+  text-wrap: balance;
+}
+.slide--quote blockquote::before {
+  content: "\201C";
+  display: block;
+  font-size: 132px;
+  line-height: .55;
+  color: var(--accent);
+  margin-bottom: 34px;
+}
+.slide--quote .attrib {
+  margin-top: 48px;
+  font-size: 19px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.slide--quote .attrib::before {
+  content: "";
+  width: 44px;
+  height: 1px;
+  background: var(--accent);
+}
+
+/* ---------- 5. donnée ---------- */
+.slide--data { justify-content: flex-start; }
+.slide--data .figure {
+  font-family: var(--serif);
+  font-size: 296px;
+  line-height: .8;
+  letter-spacing: -.05em;
+  font-weight: 400;
+  margin-top: 8px;
+}
+.slide--data .figure .unit {
+  font-size: .30em;
+  color: var(--accent);
+  letter-spacing: -.01em;
+}
+.slide--data .row {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 88px;
+  align-items: start;
+  margin-top: auto;
+  padding-bottom: 18px;
+}
+.slide--data .notes { display: grid; gap: 16px; }
+.slide--data .notes .small { padding-left: 18px; border-left: 1px solid var(--rule); }
+
+/* ---------- 6. plein cadre ---------- */
+.slide--full { padding: 0; justify-content: flex-end; }
+.slide--full .media {
+  position: absolute;
+  inset: 0;
+  background-color: #12110f;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.slide--full .media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.86) 0%, rgba(0,0,0,.45) 38%, rgba(0,0,0,0) 72%);
+}
+.slide--full .caption {
+  position: relative;
+  padding: 0 var(--pad) 88px;
+  color: #fff;
+  max-width: 28em;
+}
+.slide--full .caption h3 { color: #fff; margin-bottom: 10px; font-size: 31px; letter-spacing: -.015em; }
+.slide--full .caption p { color: rgba(255,255,255,.82); font-size: 19px; line-height: 1.5; }
+.slide--full::after { color: rgba(255,255,255,.6); }
+
+/* ---------- 7. liste ---------- */
+.slide--list { justify-content: center; }
+.slide--list .h2 { max-width: 17em; }
+.slide--list .items {
+  display: grid;
+  margin-top: 48px;
+}
+.slide--list .item {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 430px;
+  gap: 32px;
+  align-items: baseline;
+  padding: 26px 0;
+  border-top: 1px solid var(--rule);
+}
+.slide--list .item:last-child { border-bottom: 1px solid var(--rule); }
+.slide--list .n {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--accent);
+  padding-top: 6px;
+}
+.slide--list .t { font-size: 34px; line-height: 1.2; letter-spacing: -.014em; }
+.slide--list .d { font-size: 19px; color: var(--muted); line-height: 1.45; text-align: left; }
+
+/* ---------- 8. fin ---------- */
+.slide--end { justify-content: flex-end; }
+.slide--end .display { max-width: 11em; }
+.slide--end .contact {
+  margin-top: 44px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  gap: 60px;
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--muted);
+}
+
+/* ---------- accessibilité ---------- */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- impression ---------- */
+@media print {
+  html, body { background: #fff; }
+  .slide { break-after: page; page-break-after: always; }
+  .slide:last-child { break-after: auto; page-break-after: auto; }
+}
+
+@page { size: 1600px 900px; margin: 0; }

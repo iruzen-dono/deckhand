@@ -1,0 +1,37 @@
+{
+  "name": "@iruzen/deckhand",
+  "version": "0.1.0",
+  "description": "Editorial slide system for coding agents. 8 layouts, one CSS file, zero dependencies, zero network.",
+  "type": "module",
+  "bin": {
+    "deckhand": "bin/deckhand.js"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs examples/pitch dist",
+    "audit": "node scripts/audit.mjs dist",
+    "demo": "npm run build && npm run audit"
+  },
+  "files": [
+    "bin",
+    "scripts",
+    "assets",
+    "examples",
+    "SKILL.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "slides",
+    "presentation",
+    "deck",
+    "claude-code",
+    "codex",
+    "agent-skill",
+    "html",
+    "pdf"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
