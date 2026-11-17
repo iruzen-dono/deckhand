@@ -15,6 +15,4 @@
     <circle cx="1180" cy="360" r="148" fill="#e2683a" opacity="0.09"/>
     <circle cx="1180" cy="360" r="4" fill="#e2683a"/>
   </g>
-
-  <rect x="96" y="96" width="96" height="3" fill="#e2683a"/>
 </svg>

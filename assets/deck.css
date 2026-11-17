@@ -82,6 +82,7 @@ html, body {
 /* kicker : hors flux, toujours en haut */
 .kicker {
   position: absolute;
+  z-index: 3;
   top: var(--pad);
   left: var(--pad);
   right: var(--pad);
@@ -253,10 +254,16 @@ em { font-style: italic; color: var(--accent); }
   font-size: 12.5px; line-height: 1.6; color: var(--muted);
   margin-top: 16px; max-width: 30ch;
 }
-.mini--after .acc {
-  position: absolute; left: 20px; bottom: 18px; width: 64px; height: 2px;
-  background: var(--accent);
+.mini--after .stats {
+  position: absolute; left: 20px; right: 20px; bottom: 16px;
+  display: flex; gap: 26px;
+  padding-top: 10px; border-top: 1px solid var(--rule);
 }
+.mini--after .stats b {
+  display: block; font-family: var(--serif); font-weight: 400;
+  font-size: 22px; line-height: 1.1; color: var(--ink);
+}
+.mini--after .stats span { font-size: 9.5px; letter-spacing: .04em; color: var(--muted); }
 .slide--two-col .col p + p { margin-top: 18px; }
 
 /* ---------- 4. citation ---------- */
@@ -272,10 +279,11 @@ em { font-style: italic; color: var(--accent); }
 .slide--quote blockquote::before {
   content: "\201C";
   display: block;
-  font-size: 132px;
-  line-height: .55;
+  font-size: 108px;
+  line-height: .72;
   color: var(--accent);
-  margin-bottom: 34px;
+  margin-bottom: 4px;
+  margin-left: -0.05em;
 }
 .slide--quote .attrib {
   margin-top: 48px;
@@ -315,7 +323,7 @@ em { font-style: italic; color: var(--accent); }
   display: grid;
   grid-template-columns: 1.15fr .85fr;
   gap: 88px;
-  align-items: start;
+  align-items: baseline;
   margin-top: auto;
   padding-bottom: 18px;
 }
@@ -381,20 +389,34 @@ em { font-style: italic; color: var(--accent); }
 
 /* ---------- 8. fin ---------- */
 .slide--end { justify-content: flex-end; }
+.slide--end .version {
+  position: absolute;
+  top: var(--pad);
+  right: var(--pad);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .1em;
+  color: var(--muted);
+}
 .slide--end .display { max-width: 11em; }
 .slide--end .contact {
   margin-top: 44px;
   padding-top: 26px;
   border-top: 1px solid var(--rule);
   display: flex;
-  align-items: baseline;
-  gap: 64px;
+  gap: 88px;
   font-family: var(--mono);
-  font-size: 26px;
-  color: var(--ink);
 }
-.slide--end .contact .cmd { color: var(--accent); }
-.slide--end .contact .url { font-size: 17px; color: var(--muted); }
+.slide--end .cta { display: grid; gap: 8px; }
+.slide--end .cta .label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.slide--end .cta .cmd { font-size: 27px; color: var(--accent); }
+.slide--end .cta .url { font-size: 19px; color: var(--muted); }
 
 /* ---------- accessibilité ---------- */
 .sr-only {
