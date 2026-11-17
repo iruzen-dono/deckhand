@@ -31,16 +31,14 @@ Same content. Left: the model's default output. Right: the same text, through De
 ## Try it in 30 seconds
 
 ```bash
-# no install, straight from the repo
-npx github:iruzen-dono/deckhand build examples/pitch dist
-```
-
-```bash
 git clone https://github.com/iruzen-dono/deckhand
 cd deckhand
 node bin/deckhand.js build examples/pitch dist
 node bin/deckhand.js audit dist        # 0 overflows or it fails
 ```
+
+Needs Node 18+ and a Chromium-family browser (Chrome, Edge or Chromium) for the
+PDF and PNG export. Nothing else.
 
 Output:
 

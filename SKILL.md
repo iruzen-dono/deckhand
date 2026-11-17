@@ -150,7 +150,7 @@ non-HTML assets next to the output. Use a dark image — the caption is white.
 <section class="slide slide--end theme-ink" data-n="08">
   <div class="kicker">Deckhand</div>
   <h1 class="display">Install it.</h1>
-  <span class="contact"><span>npx github:iruzen-dono/deckhand build</span><span>github.com/iruzen-dono/deckhand</span></div>
+  <span class="contact"><span>git clone github.com/iruzen-dono/deckhand</span><span>iruzen-dono.github.io/deckhand</span></div>
 </section>
 ```
 
