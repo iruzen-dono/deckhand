@@ -2,8 +2,8 @@
 /**
  * deckhand site — prépare la page de démo statique pour GitHub Pages (/docs).
  *   node scripts/site.mjs
- * Copie le deck autonome en docs/index.html et ses assets, puis laisse
- * GitHub Pages servir docs/ tel quel.
+ * Prend dist/deck.html, ajoute une barre de navigation et un scaling responsive,
+ * puis écrit docs/index.html. GitHub Pages sert docs/ tel quel.
  */
 import { readFileSync, writeFileSync, copyFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
@@ -22,24 +22,35 @@ mkdirSync(docs, { recursive: true });
 
 let html = readFileSync(join(dist, 'deck.html'), 'utf8');
 
-// petite barre de navigation propre à la version web (le PDF/PNG n'en ont pas)
-html = html.replace('</body>', `
-<div class="site-nav">
-  <span>deckhand</span>
-  <span><a href="https://github.com/iruzen-dono/deckhand">github</a> · <a href="deck.pdf">pdf</a></span>
-</div>
+const nav = `
+<header class="site-nav">
+  <span class="brand">deckhand</span>
+  <nav><a href="https://github.com/iruzen-dono/deckhand">github</a><i>·</i><a href="deck.pdf">pdf</a></nav>
+</header>
 <style>
-  .site-nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-between;
-    gap:12px;padding:12px 16px;font:13px/1 "JetBrains Mono",Consolas,monospace;letter-spacing:.1em;
-    text-transform:uppercase;color:#6b6459;background:#f7f4ee;border-top:1px solid #918675;z-index:99}
-  .site-nav a{color:#b4451f;text-decoration:none}
   html,body{background:#3a3a3a;max-width:100%;overflow-x:hidden}
-  body{display:flex;flex-direction:column;align-items:center}
-  .fit{overflow:hidden;flex:none;margin:0 0 24px}
+  body{display:block}
+  .site-nav{
+    position:sticky;top:0;z-index:99;width:100%;box-sizing:border-box;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 20px;background:#f7f4ee;border-bottom:1px solid #918675;
+    font:12px/1 "JetBrains Mono",Consolas,monospace;letter-spacing:.12em;
+    text-transform:uppercase;color:#6b6459;
+  }
+  .site-nav a{color:#b4451f;text-decoration:none}
+  .site-nav i{font-style:normal;margin:0 10px;color:#918675}
+  .site-nav nav{display:flex;align-items:center}
+  .fit{overflow:hidden;margin:24px auto 0}
   .fit>.slide{margin:0;transform-origin:top left}
   @media screen and (min-width:1700px){.fit>.slide{box-shadow:0 24px 80px rgba(0,0,0,.35)}}
+  @media screen and (max-width:760px){
+    .site-nav{font-size:11px;padding:10px 14px}
+    .site-nav .brand{letter-spacing:.14em}
+  }
 </style>
-</body>
+`;
+
+const script = `
 <script>
 (function(){
   document.querySelectorAll('.slide').forEach(function(s){
@@ -59,9 +70,13 @@ html = html.replace('</body>', `
   window.addEventListener('load',fit);
   fit();
 })();
-</script>`);
+</script>
+`;
 
+html = html.replace('<body>', '<body>' + nav);
+html = html.replace('</body>', script + '</body>');
 writeFileSync(join(docs, 'index.html'), html);
+
 for (const a of ['plate.svg']) {
   if (existsSync(join(dist, a))) copyFileSync(join(dist, a), join(docs, a));
 }
