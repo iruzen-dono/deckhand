@@ -35,3 +35,11 @@ jobs:
           test -s dist/deck.pdf
           test -s dist/png/01.png
           test -s dist/png/08.png
+
+      - name: Build the Pages demo and check it is self-contained
+        run: |
+          node scripts/site.mjs
+          test -s docs/index.html
+          if grep -qE 'src="https?://|url\(https?://' docs/index.html; then
+            echo "docs/index.html references an external resource"; exit 1
+          fi
