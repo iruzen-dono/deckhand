@@ -26,6 +26,10 @@ through Deckhand.
 ## Quick start
 
 ```bash
+# straight from the repo, no install
+npx github:iruzen-dono/deckhand build examples/pitch dist
+
+# or clone it
 git clone https://github.com/iruzen-dono/deckhand
 cd deckhand
 node bin/deckhand.js build examples/pitch dist
@@ -86,6 +90,14 @@ Add the class to the slide: `class="slide slide--quote theme-ink"`.
   background it sits on.
 - **Layout:** 1600×900, 96px margins, a 64px header band for the kicker.
 - **Output:** plain HTML. No build framework, no runtime, no npm install.
+
+## Verified, not claimed
+
+- **W3C HTML:** 0 errors, 0 warnings (`validator.w3.org/nu`)
+- **Overflow:** 0 defects across 8 slides, measured in the live DOM (`deckhand audit`)
+- **Contrast:** every text/background pair ≥ 4.5:1; structural rules ≥ 3:1
+- **PDF:** 8 pages, fonts embedded, 174 KB
+- **Output:** one 324 KB HTML file, fonts inlined, works offline
 
 ## What it isn't
 
