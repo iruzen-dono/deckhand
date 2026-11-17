@@ -37,17 +37,14 @@ signal de texte généré.
 | CI qui casse si une slide déborde | ✅ |
 | README avec le hook en première ligne | ✅ |
 
-À faire au moment de publier :
+**Publié le 17/11 à 09:27 UTC.**
 
-```powershell
-cd C:\Users\jules\Projects\deckhand
-gh repo create iruzen-dono/deckhand --public --source . --push
-gh repo edit --description "Editorial slides for coding agents. 8 layouts, one CSS file, zero dependencies. HTML in, PDF and PNG out." `
-  --homepage "https://iruzen-dono.github.io/deckhand/" `
-  --add-topic agent-skills,claude-code,codex,slides,presentation,html-to-pdf,design-system,typography,zero-dependencies
-```
-
-Puis Settings → Pages → Source : `main` / `/docs`.
+- Repo : https://github.com/iruzen-dono/deckhand
+- Démo : https://iruzen-dono.github.io/deckhand/
+- Release : v0.1.0
+- Branche par défaut : `master` (Pages → `master` / `/docs`)
+- Langage détecté : JavaScript 55 % / CSS 45 % (le `.gitattributes` exclut les artefacts générés)
+- CI : verte au premier run
 
 ---
 
