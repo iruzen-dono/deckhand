@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Ensure a Chromium-family browser
+        run: |
+          if ! command -v google-chrome >/dev/null && ! command -v chromium >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq chromium || sudo apt-get install -y -qq chromium-browser
+          fi
+          command -v google-chrome || command -v chromium || command -v chromium-browser
+
+      - name: Build the demo deck
+        run: node bin/deckhand.js build examples/pitch dist
+
+      - name: Audit (fails on any slide overflow)
+        run: node bin/deckhand.js audit dist
+
+      - name: Check the exported artefacts exist
+        run: |
+          test -s dist/deck.html
+          test -s dist/deck.pdf
+          test -s dist/png/01.png
+          test -s dist/png/08.png

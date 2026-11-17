@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+# fonts.css est généré (woff2 → base64) : ne doit pas écraser le langage du repo
+assets/fonts.css linguist-generated=true
+
+# docs/ est un site statique de démonstration, pas du code source
+docs/** linguist-documentation
+
+# le deck publié est un artefact de build (335 KB de HTML généré)
+docs/index.html linguist-generated=true
+dist/** linguist-generated=true

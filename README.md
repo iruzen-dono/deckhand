@@ -1,121 +1,126 @@
 # Deckhand
 
-**Editorial slides for coding agents.** Eight layouts, one CSS file, zero dependencies, zero network.
+**Editorial slides for coding agents.** Your agent writes the content. Deckhand makes the layout look like a studio did it.
 
-Claude writes great content. Its decks still look like 2009.
+[![License: MIT](https://img.shields.io/badge/license-MIT-14110d)](LICENSE)
+[![Dependencies](https://img.shields.io/badge/dependencies-0-b4451f)](package.json)
+[![Node](https://img.shields.io/badge/node-18%2B-14110d)](package.json)
+[![CI](https://github.com/iruzen-dono/deckhand/actions/workflows/ci.yml/badge.svg)](https://github.com/iruzen-dono/deckhand/actions/workflows/ci.yml)
 
-![Deckhand — avant / après](docs/preview.gif)
+![Deckhand — before / after](docs/preview.gif)
+
+**[See the live deck →](https://iruzen-dono.github.io/deckhand/)** · [PDF](https://iruzen-dono.github.io/deckhand/deck.pdf) · 8 slides, no install.
 
 ---
 
 ## The problem
 
 Ask an agent for a presentation and you get the same thing every time: a gradient
-hero, a white body, two equal columns, emoji as iconography, and a bold Arial
-heading. The content is fine. The layout tells the room that nobody designed it.
+hero, a white body, two equal columns, emoji as iconography, a bold Arial heading.
+The content is fine. The layout tells the room that nobody designed it.
 
-Deckhand is the missing layer: a small, opinionated typographic system that the
-agent fills in. You get one HTML fragment per slide, assembled into a single
-self-contained file, exported to PDF and PNG.
+Deckhand is the missing layer. You write one small HTML fragment per slide, using
+eight fixed layouts. The build assembles them into one self-contained file, then
+exports PDF and PNG. The typography, the grid, the accent and the spacing are
+already decided — the agent only fills in the content.
 
-![Avant / Après](docs/compare.png)
+![Before / after, same content](docs/compare.png)
 
-Same content. Left: what the model produces by default. Right: the same text,
-through Deckhand.
+Same content. Left: the model's default output. Right: the same text, through Deckhand.
 
-## Quick start
+## Try it in 30 seconds
 
 ```bash
-# straight from the repo, no install
+# no install, straight from the repo
 npx github:iruzen-dono/deckhand build examples/pitch dist
+```
 
-# or clone it
+```bash
 git clone https://github.com/iruzen-dono/deckhand
 cd deckhand
 node bin/deckhand.js build examples/pitch dist
+node bin/deckhand.js audit dist        # 0 overflows or it fails
 ```
 
-That writes:
+Output:
 
 ```
-dist/deck.html     one self-contained file (fonts inlined, ~310 KB)
-dist/deck.pdf      one page per slide
-dist/png/01.png    … one image per slide
+dist/deck.html    one self-contained file — fonts inlined, 325 KB, works offline
+dist/deck.pdf     one page per slide, fonts embedded
+dist/png/01.png   … one image per slide, 1600×900
 ```
 
-Verify nothing overflows:
+## Install the skill
 
 ```bash
-node bin/deckhand.js audit dist
+node bin/deckhand.js install              # → ~/.claude/skills/deckhand
+node bin/deckhand.js install --target codex
 ```
 
-## Use it with your agent
+Then ask your agent for a deck. `SKILL.md` tells it which layout to use for which
+content shape, the content rules (one idea per slide, six lines maximum, one
+accent), and the anti-patterns it must refuse.
 
-Copy `SKILL.md` into your skills directory:
-
-```bash
-# Claude Code
-mkdir -p ~/.claude/skills/deckhand && cp SKILL.md ~/.claude/skills/deckhand/
-# Codex / others: point the agent at SKILL.md in this repo
-```
-
-Then ask for a deck. The skill tells the agent which of the 8 layouts to use,
-the content rules (one idea per slide, six lines maximum, one accent), and the
-anti-patterns to refuse.
+Supported: Claude Code, Codex, Cursor, and anything that reads a `SKILL.md`.
 
 ## The 8 layouts
 
-| Layout | For | Example |
+| Layout | For | |
 |---|---|---|
 | `cover` | the opening claim | [01](docs/slides/01.png) |
 | `section` | a turning point in the narrative | [02](docs/slides/02.png) |
-| `list` | 3-4 parallel points | [03](docs/slides/03.png) |
+| `list` | 3–4 parallel points | [03](docs/slides/03.png) |
 | `data` | one number that changes the argument | [04](docs/slides/04.png) |
 | `quote` | one sentence worth remembering | [05](docs/slides/05.png) |
 | `two-col` | comparison, before/after | [06](docs/slides/06.png) |
 | `full` | full-bleed image with a caption | [07](docs/slides/07.png) |
 | `end` | the action you want | [08](docs/slides/08.png) |
 
-## Three themes
-
-`paper` (warm off-white, default), `ink` (near-black), `night` (deep blue).
-Add the class to the slide: `class="slide slide--quote theme-ink"`.
+Three themes: `paper` (warm off-white, default), `ink` (near-black), `night` (deep blue).
+Add the class to a slide: `class="slide slide--quote theme-ink"`.
 
 ## What's inside
 
-- **Type:** Instrument Serif for titles, Instrument Sans for body, JetBrains Mono
-  for labels. All three are embedded as base64 in the output — the deck renders
-  identically on any machine, offline, forever. Licences: SIL OFL.
-- **Colour:** one accent (terracotta `#b4451f`), verified WCAG AA against every
-  background it sits on.
-- **Layout:** 1600×900, 96px margins, a 64px header band for the kicker.
-- **Output:** plain HTML. No build framework, no runtime, no npm install.
+- **Type:** Instrument Serif, Instrument Sans, JetBrains Mono — embedded as base64,
+  SIL OFL. The deck renders identically on any machine, online or offline.
+- **Colour:** one accent, terracotta `#b4451f`. No gradients, no glass, no glow.
+- **Layout:** 1600×900, 96 px margins, a 64 px header band for the kicker.
+- **Build:** plain Node, no dependency, no framework. Chromium does the PDF and PNG.
 
 ## Verified, not claimed
 
-- **W3C HTML:** 0 errors, 0 warnings (`validator.w3.org/nu`)
-- **Overflow:** 0 defects across 8 slides, measured in the live DOM (`deckhand audit`)
-- **Contrast:** every text/background pair ≥ 4.5:1; structural rules ≥ 3:1
-- **PDF:** 8 pages, fonts embedded, 174 KB
-- **Output:** one 324 KB HTML file, fonts inlined, works offline
+| Check | Result |
+|---|---|
+| W3C Nu HTML | 0 errors, 0 warnings |
+| Slide overflow (measured in the live DOM) | 0 across 8 slides |
+| Text contrast | ≥ 4.5:1 on every pair |
+| Structural rule contrast | 3.26:1 paper · 3.29:1 ink · 3.05:1 night |
+| PDF | 8 pages, fonts embedded, 247 KB |
+| `deck.html` | 325 KB, 0 external network requests |
 
 ## What it isn't
 
-Not PowerPoint. No animations, no transitions, no slide templates, no drag and
-drop, no collaboration, no cloud. A deck is a folder of small HTML files and a
-build command — which is exactly why an agent can write one reliably.
+Not PowerPoint. No animations, no templates, no drag and drop, no collaboration,
+no cloud, no AI inside. A deck is a folder of small HTML files and a build
+command — which is exactly why an agent can write one reliably.
 
-## Layout of the repo
+## Repo layout
 
 ```
-assets/deck.css     the whole design system
+assets/deck.css     the whole design system, hand-written
 assets/fonts.css    embedded fonts (generated)
 examples/pitch/     the 8-slide demo
 examples/before/    the "generated by default" comparison
 scripts/build.mjs   assemble + PDF + PNG
 scripts/audit.mjs   overflow detector
+scripts/site.mjs    builds docs/ for GitHub Pages
 SKILL.md            the agent instructions
 ```
+
+## Contributing
+
+Design changes are judged visually. Read [CONTRIBUTING.md](CONTRIBUTING.md) first —
+new colours, gradients and extra dependencies are rejected on principle.
 
 ## License
 

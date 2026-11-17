@@ -24,6 +24,8 @@ const CHROME = [
   'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   '/usr/bin/google-chrome',
+  '/usr/bin/google-chrome-stable',
+  '/usr/bin/chromium-browser',
   '/usr/bin/chromium',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
 ].find(existsSync);

@@ -26,6 +26,9 @@ switch (cmd) {
   case 'audit':
     run('audit.mjs', [args[0] || 'dist']);
     break;
+  case 'install':
+    run('install.mjs', args);
+    break;
   case 'init': {
     const dir = resolve(args[0] || 'slides');
     if (existsSync(dir) && !args.includes('--force')) {
@@ -48,6 +51,7 @@ switch (cmd) {
   deckhand build [src=slides] [out=dist]   assemble, export PDF + PNG
   deckhand audit [out=dist]                vérifie les débordements
   deckhand init  [dir=slides]              crée une slide de départ
+  deckhand install [--target claude|codex|cursor|all]   installe le skill
 
 Un fragment par slide : slides/01.html, slides/02.html, …
 Layouts : cover, section, two-col, quote, data, full, list, end.
