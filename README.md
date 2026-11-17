@@ -43,7 +43,7 @@ PDF and PNG export. Nothing else.
 Output:
 
 ```
-dist/deck.html    one self-contained file — fonts inlined, 325 KB, works offline
+dist/deck.html    one self-contained file — fonts inlined, 327 KB, works offline
 dist/deck.pdf     one page per slide, fonts embedded
 dist/png/01.png   … one image per slide, 1600×900
 ```
@@ -93,8 +93,8 @@ Add the class to a slide: `class="slide slide--quote theme-ink"`.
 | Slide overflow (measured in the live DOM) | 0 across 8 slides |
 | Text contrast | ≥ 4.5:1 on every pair |
 | Structural rule contrast | 3.26:1 paper · 3.29:1 ink · 3.05:1 night |
-| PDF | 8 pages, fonts embedded, 247 KB |
-| `deck.html` | 325 KB, 0 external network requests |
+| PDF | 8 pages, fonts embedded, 248 KB |
+| `deck.html` | 327 KB, 0 external network requests |
 
 ## What it isn't
 
