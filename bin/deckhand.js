@@ -24,7 +24,7 @@ switch (cmd) {
     run('build.mjs', [args[0] || 'slides', args[1] || 'dist']);
     break;
   case 'audit':
-    run('audit.mjs', [args[0] || 'dist']);
+    run('audit.mjs', args);
     break;
   case 'install':
     run('install.mjs', args);
@@ -43,13 +43,13 @@ switch (cmd) {
   }
   case '--version':
   case '-v':
-    console.log('deckhand 0.1.0');
+    console.log('deckhand 0.2.0');
     break;
   default:
     console.log(`deckhand — editorial slides for agents
 
   deckhand build [src=slides] [out=dist]   assemble, export PDF + PNG
-  deckhand audit [out=dist]                vérifie les débordements
+  deckhand audit [out=dist] [--json]       débordements + contrat éditorial
   deckhand init  [dir=slides]              crée une slide de départ
   deckhand install [--target claude|codex|agents|all]   installe le skill
 

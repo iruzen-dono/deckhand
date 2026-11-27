@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 /**
- * deckhand audit — vérifie qu'aucune slide ne déborde et que le texte n'est pas coupé.
- *   node scripts/audit.mjs [outDir=dist]
- * Sortie : JSON + code retour 1 si débordement.
+ * deckhand audit — vérifie qu'aucune slide ne déborde et que le deck respecte
+ * le contrat éditorial (kicker, foliot, titre, thèmes sombres, autonomie).
+ *
+ *   node scripts/audit.mjs [outDir=dist] [--json]
+ *
+ * Sortie : rapport lisible (ou JSON avec --json), code retour 1 si défaut.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
@@ -11,9 +14,14 @@ import { execFileSync } from 'node:child_process';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
-const outDir = resolve(process.argv[2] || join(ROOT, 'dist'));
+const args = process.argv.slice(2);
+const asJson = args.includes('--json');
+const outArg = args.find(a => !a.startsWith('--'));
+const outDir = resolve(outArg || join(ROOT, 'dist'));
 const deckPath = join(outDir, 'deck.html');
 if (!existsSync(deckPath)) { console.error('✗ deck.html introuvable'); process.exit(2); }
+
+const MAX_DARK_SLIDES = 3;
 
 const CHROME = [
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -27,6 +35,13 @@ const CHROME = [
 const probe = `<script>
 window.addEventListener('load', () => setTimeout(() => {
   const out = [];
+  const external = (el) => {
+    const raw = el.getAttribute('src') || el.getAttribute('href') || '';
+    if (/^(https?:)?\\/\\//i.test(raw.trim())) return el.tagName.toLowerCase() + '=' + raw.trim().slice(0, 60);
+    const style = el.getAttribute('style') || '';
+    const m = style.match(/url\\(\\s*['"]?((?:https?:)?\\/\\/[^)'"]+)/i);
+    return m ? 'style-url=' + m[1].slice(0, 60) : null;
+  };
   document.querySelectorAll('.slide').forEach((s, i) => {
     const r = s.getBoundingClientRect();
     const bad = [...s.querySelectorAll('*')].filter(el => {
@@ -38,7 +53,23 @@ window.addEventListener('load', () => setTimeout(() => {
       !el.classList.contains('sr-only') &&
       el.scrollWidth > el.clientWidth + 1 && getComputedStyle(el).overflow !== 'visible'
     ).map(el => el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : ''));
-    out.push({ n: i + 1, overflow: [...new Set(bad)].slice(0, 8), clipped: [...new Set(clipped)].slice(0, 8) });
+    const kickers = s.querySelectorAll('.kicker').length;
+    const themes = [...s.classList].filter(c => c === 'theme-ink' || c === 'theme-night');
+    const allow = (s.getAttribute('data-allow') || '').split(/\\s+/).filter(Boolean);
+    const externals = [...new Set([...s.querySelectorAll('[src],[href],[style]')].map(external).filter(Boolean))];
+    const emoji = /\\p{Extended_Pictographic}/u.test(s.innerText || '');
+    out.push({
+      n: i + 1,
+      dataN: s.getAttribute('data-n'),
+      kickers,
+      heading: !!s.querySelector('h1, h2, h3'),
+      themes,
+      allow,
+      externals,
+      emoji,
+      overflow: [...new Set(bad)].slice(0, 8),
+      clipped: [...new Set(clipped)].slice(0, 8),
+    });
   });
   const pre = document.createElement('pre'); pre.id = 'audit-out';
   pre.textContent = JSON.stringify(out);
@@ -58,13 +89,79 @@ const dom = execFileSync(CHROME, [
 
 const m = dom.match(/<pre id="audit-out">([\s\S]*?)<\/pre>/);
 if (!m) { console.error('✗ sonde non exécutée'); process.exit(2); }
-const data = JSON.parse(m[1]);
-let bad = 0;
-for (const s of data) {
-  const ok = !s.overflow.length && !s.clipped.length;
-  if (!ok) bad++;
-  console.log(`${ok ? '✓' : '✗'} slide ${String(s.n).padStart(2, '0')}` +
-    (ok ? '' : `  overflow=[${s.overflow.join(', ')}] clipped=[${s.clipped.join(', ')}]`));
+const slides = JSON.parse(m[1]);
+
+// Document-level autonomy: the assembled deck must not fetch anything.
+const docExternals = (html.match(/(?:src|href)\s*=\s*["'](?:https?:)?\/\//gi) || [])
+  .concat(html.match(/url\(\s*['"]?https?:\/\//gi) || []);
+const seenFolios = new Set();
+let contentDefects = 0;
+let layoutDefects = 0;
+const darkSlides = [];
+
+for (const s of slides) {
+  const issues = [];
+
+  if (!s.dataN) issues.push('data-n manquant');
+  else if (seenFolios.has(s.dataN)) issues.push(`data-n "${s.dataN}" dupliqué`);
+  else seenFolios.add(s.dataN);
+
+  if (!s.kickers) issues.push('kicker manquant');
+  if (s.kickers > 1) issues.push(`${s.kickers} kickers`);
+  if (!s.heading) issues.push('aucun titre');
+  if (s.externals.length) issues.push(`ressource externe: ${s.externals.join(', ')}`);
+  if (s.emoji && !s.allow.includes('emoji')) issues.push('emoji dans le texte');
+  if (s.themes.length) darkSlides.push(s.n);
+
+  s.issues = issues;
+  const layoutBad = s.overflow.length || s.clipped.length;
+  if (layoutBad) layoutDefects++;
+  if (issues.length) contentDefects++;
 }
-console.log(bad ? `\n✗ ${bad} slide(s) en défaut` : '\n✓ aucun débordement');
-process.exit(bad ? 1 : 0);
+
+const globalIssues = [];
+if (darkSlides.length > MAX_DARK_SLIDES) {
+  globalIssues.push(`${darkSlides.length} slides sombres (max ${MAX_DARK_SLIDES}) : ${darkSlides.join(', ')}`);
+}
+if (docExternals.length) {
+  globalIssues.push(`${docExternals.length} référence(s) externe(s) dans deck.html — le deck doit être autonome`);
+}
+
+if (asJson) {
+  console.log(JSON.stringify({
+    ok: contentDefects === 0 && layoutDefects === 0 && globalIssues.length === 0,
+    slides: slides.map(s => ({
+      n: s.n,
+      data_n: s.dataN,
+      dark: s.themes.length > 0,
+      issues: s.issues,
+      overflow: s.overflow,
+      clipped: s.clipped,
+    })),
+    global_issues: globalIssues,
+  }, null, 2));
+} else {
+  slides.forEach((s) => {
+    const ok = !s.issues.length && !s.overflow.length && !s.clipped.length;
+    const detail = [
+      s.issues.length ? s.issues.join(', ') : '',
+      s.overflow.length ? `overflow=[${s.overflow.join(', ')}]` : '',
+      s.clipped.length ? `clipped=[${s.clipped.join(', ')}]` : '',
+    ].filter(Boolean).join('  ');
+    console.log(`${ok ? '✓' : '✗'} slide ${String(s.n).padStart(2, '0')}` + (ok ? '' : `  ${detail}`));
+  });
+
+  globalIssues.forEach(g => console.log(`✗ ${g}`));
+
+  if (!contentDefects && !layoutDefects && !globalIssues.length) {
+    console.log('\n✓ aucun débordement, contrat éditorial respecté');
+  } else {
+    const parts = [];
+    if (layoutDefects) parts.push(`${layoutDefects} slide(s) en débordement`);
+    if (contentDefects) parts.push(`${contentDefects} slide(s) hors contrat`);
+    if (globalIssues.length) parts.push(`${globalIssues.length} défaut(s) global(aux)`);
+    console.log(`\n✗ ${parts.join(', ')}`);
+  }
+}
+
+process.exit(contentDefects || layoutDefects || globalIssues.length ? 1 : 0);

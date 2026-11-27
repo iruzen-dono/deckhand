@@ -19,8 +19,10 @@ A deck that ignores the content rules does not.
    Files are assembled in filename order.
 3. `deckhand build slides dist` — writes `dist/deck.html`, `dist/deck.pdf`,
    `dist/png/NN.png`.
-4. `deckhand audit dist` — fails if any slide overflows. **Run it. Fix what it
-   reports. Do not ship a deck that fails audit.**
+4. `deckhand audit dist` — fails on a layout overflow **or** a contract break:
+   missing `data-n` / kicker / heading, duplicate folio, more than 3 dark slides,
+   an external asset, or an emoji. **Run it. Fix what it reports. Do not ship a
+   deck that fails audit.** `--json` returns the same report as structured data.
 
 ## The contract
 
@@ -31,6 +33,9 @@ A deck that ignores the content rules does not.
 - Themes: default is `paper` (warm off-white). Add `theme-ink` (near-black) or
   `theme-night` (deep blue) to the section for a dark slide. Use a dark theme
   for at most 3 slides — a section opener, a quote, the closing slide.
+- A slide that deliberately shows slop (the "before" panel, for instance) may
+  declare `data-allow="emoji"`. That is the only escape hatch; it never applies
+  to a slide that is meant to look designed.
 
 ## The 8 layouts
 
@@ -197,7 +202,7 @@ If the source material is thin, produce **fewer slides**, not more decoration.
 
 ## Checklist before delivering
 
-- [ ] `deckhand audit dist` returns 0 defects
+- [ ] `deckhand audit dist` returns 0 defects (layout **and** contract)
 - [ ] Every slide has a kicker
 - [ ] No slide exceeds 6 lines of body copy
 - [ ] Dark theme used on at most 3 slides

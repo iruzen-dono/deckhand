@@ -152,10 +152,11 @@ lancement qui raconte une vraie construction convertit mieux qu'un communiqué.
    layouts. [GIF]
 2. Eight layouts, one CSS file, zero dependencies. The fonts are embedded, so it
    renders the same on any machine.
-3. One HTML fragment per slide. `deckhand build` gives you a 325 KB file, a PDF,
+3. One HTML fragment per slide. `deckhand build` gives you a 327 KB file, a PDF,
    and one PNG per slide.
-4. There's an audit script that fails when a slide overflows. I needed it more
-   than I expected.
+4. There's an audit script that fails when a slide overflows — and when the deck
+   breaks its own rules: missing kicker, 4th dark slide, external asset, emoji.
+   I needed it more than I expected.
 5. MIT, available now: [link]
 
 ---

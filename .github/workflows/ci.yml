@@ -26,8 +26,29 @@ jobs:
       - name: Build the demo deck
         run: node bin/deckhand.js build examples/pitch dist
 
-      - name: Audit (fails on any slide overflow)
+      - name: Audit (fails on overflow or any contract break)
         run: node bin/deckhand.js audit dist
+
+      - name: Audit rejects a slide without a kicker
+        run: |
+          mkdir -p /tmp/broken
+          cp examples/pitch/* /tmp/broken/
+          sed -i '/class="kicker"/d' /tmp/broken/03.html
+          node bin/deckhand.js build /tmp/broken /tmp/broken-dist > /dev/null
+          if node bin/deckhand.js audit /tmp/broken-dist; then
+            echo "audit should have failed on a slide without a kicker"
+            exit 1
+          fi
+
+      - name: Audit exposes a machine-readable report
+        run: |
+          node bin/deckhand.js audit dist --json | node -e "
+            let s=''; process.stdin.on('data', d => s += d).on('end', () => {
+              const r = JSON.parse(s);
+              if (!r.ok || r.slides.length !== 8) { console.error(s); process.exit(1); }
+              console.log('json audit ok —', r.slides.length, 'slides');
+            });
+          "
 
       - name: Check the exported artefacts exist
         run: |
