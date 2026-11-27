@@ -94,6 +94,20 @@ const slides = JSON.parse(m[1]);
 // Document-level autonomy: the assembled deck must not fetch anything.
 const docExternals = (html.match(/(?:src|href)\s*=\s*["'](?:https?:)?\/\//gi) || [])
   .concat(html.match(/url\(\s*['"]?https?:\/\//gi) || []);
+
+// PDF sanity: one 16:9 page per slide. A silent change in Chromium's print
+// defaults would otherwise produce A4 pages nobody notices until the talk.
+const pdfPath = join(outDir, 'deck.pdf');
+let pdfPages = 0;
+let pdfRatio = null;
+if (existsSync(pdfPath)) {
+  const pdf = readFileSync(pdfPath, 'latin1');
+  const boxes = [...pdf.matchAll(/\/MediaBox\s*\[\s*0\s+0\s+([\d.]+)\s+([\d.]+)\s*\]/g)]
+    .map(m => [parseFloat(m[1]), parseFloat(m[2])]);
+  pdfPages = boxes.length;
+  if (pdfPages) pdfRatio = boxes[0][0] / boxes[0][1];
+}
+
 const seenFolios = new Set();
 let contentDefects = 0;
 let layoutDefects = 0;
@@ -127,6 +141,18 @@ if (docExternals.length) {
   globalIssues.push(`${docExternals.length} référence(s) externe(s) dans deck.html — le deck doit être autonome`);
 }
 
+const TARGET_RATIO = 16 / 9;
+if (!pdfPages) {
+  globalIssues.push('deck.pdf absent ou sans page mesurable');
+} else {
+  if (pdfPages !== slides.length) {
+    globalIssues.push(`deck.pdf a ${pdfPages} page(s) pour ${slides.length} slide(s)`);
+  }
+  if (Math.abs(pdfRatio - TARGET_RATIO) > 0.01) {
+    globalIssues.push(`deck.pdf en ${pdfRatio.toFixed(3)}:1 (attendu 16:9)`);
+  }
+}
+
 if (asJson) {
   console.log(JSON.stringify({
     ok: contentDefects === 0 && layoutDefects === 0 && globalIssues.length === 0,
@@ -138,6 +164,7 @@ if (asJson) {
       overflow: s.overflow,
       clipped: s.clipped,
     })),
+    pdf: { pages: pdfPages, ratio: pdfRatio ? Number(pdfRatio.toFixed(4)) : null },
     global_issues: globalIssues,
   }, null, 2));
 } else {

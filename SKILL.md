@@ -21,7 +21,7 @@ A deck that ignores the content rules does not.
    `dist/png/NN.png`.
 4. `deckhand audit dist` — fails on a layout overflow **or** a contract break:
    missing `data-n` / kicker / heading, duplicate folio, more than 3 dark slides,
-   an external asset, or an emoji. **Run it. Fix what it reports. Do not ship a
+   an external asset, an emoji, or a PDF that is not one 16:9 page per slide. **Run it. Fix what it reports. Do not ship a
    deck that fails audit.** `--json` returns the same report as structured data.
 
 ## The contract

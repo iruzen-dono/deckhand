@@ -43,7 +43,7 @@ switch (cmd) {
   }
   case '--version':
   case '-v':
-    console.log('deckhand 0.2.0');
+    console.log('deckhand 0.2.1');
     break;
   default:
     console.log(`deckhand — editorial slides for agents

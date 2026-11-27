@@ -94,7 +94,7 @@ Add the class to a slide: `class="slide slide--quote theme-ink"`.
 | Editorial contract (kicker, foliot, ≤3 dark slides, titles, no external asset) | 0 defect across 8 slides |
 | Text contrast | ≥ 4.5:1 on every pair |
 | Structural rule contrast | 3.26:1 paper · 3.29:1 ink · 3.05:1 night |
-| PDF | 8 pages, fonts embedded, 248 KB |
+| PDF | 8 pages at 16:9, fonts embedded, 248 KB |
 | `deck.html` | 327 KB, 0 external network requests |
 
 ## What it isn't
